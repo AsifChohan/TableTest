@@ -10,23 +10,25 @@ import UIKit
 import CoreData
 
 class ToDoListViewController: UITableViewController {
-
+    
     //Array object of item class
     
-      var dummyData = [Item]()
-      let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    // To set the data storage path
-   // let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("item.plist")
+    var dummyData = [Item]()
+    var selectCategory : Category? {
+        didSet{
+            loadData()
+        }
+    }
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       //  loadData()  Added text to test git hub
-           }
-
+        loadData()
+    }
+    
     //MARK - TableView datasource method
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dummyData.count
     }
@@ -39,16 +41,16 @@ class ToDoListViewController: UITableViewController {
         let itemRow = dummyData[indexPath.row]
         cell.textLabel?.text = itemRow.item
         
-       
+        
         
         //Using Ternary operator to cut short the if else
         cell.accessoryType = itemRow.state ? .checkmark : .none
         
-//        if dummyData[indexPath.row].state == true {
-//            cell.accessoryType = .checkmark
-//        } else {
-//            cell.accessoryType = .none
-//        }
+        //        if dummyData[indexPath.row].state == true {
+        //            cell.accessoryType = .checkmark
+        //        } else {
+        //            cell.accessoryType = .none
+        //        }
         
         return cell
     }
@@ -56,25 +58,34 @@ class ToDoListViewController: UITableViewController {
     
     //MARK  - TableView delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       // print (dummyData[indexPath.row])
+        // print (dummyData[indexPath.row])
         
         
         
         //Toggle the stat of the row
-//        if dummyData[indexPath.row].state == true {
-//                dummyData[indexPath.row].state = false
-//        }else {
-//                dummyData[indexPath.row].state = true
-//        }
+        //        if dummyData[indexPath.row].state == true {
+        //                dummyData[indexPath.row].state = false
+        //        }else {
+        //                dummyData[indexPath.row].state = true
+        //        }
+        
+        
         
         // Short for the above commented line .Setting the state property of current item to opposite.
         dummyData[indexPath.row].state = !dummyData[indexPath.row].state
         
+        // update core data example
+        // dummyData[indexPath.row].setValue("complete", forKey: "item")
+        
+        //Delete core data eample order matters here .First delete the context
+        // context.delete(dummyData[indexPath.row])
+        // dummyData.remove(at: indexPath.row)
+        
         self.saveItem()
-       // tableView.reloadData()
-
-
-       tableView.deselectRow(at: indexPath, animated: true)
+        // tableView.reloadData()
+        
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     
@@ -84,26 +95,22 @@ class ToDoListViewController: UITableViewController {
         
         var textField = UITextField()
         
-        
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "AddItem", style: .default) { (action) in
             
             let newitem = Item(context: self.context)
             newitem.item = textField.text!
             newitem.state = false
+            newitem.parentCategory = self.selectCategory
             self.dummyData.append(newitem)
-            
             self.saveItem()
-            
         }
         
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create New Item"
             textField = alertTextField
-           
         }
         alert.addAction(action)
-        
         present(alert, animated: true, completion: nil )
     }
     
@@ -116,28 +123,59 @@ class ToDoListViewController: UITableViewController {
         }
         
         tableView.reloadData()
-   }
-//    func loadData() {
-//        if let  data = try? Data(contentsOf: dataFilePath!) {
-//            let decoder = PropertyListDecoder()
-//            do {
-//                dummyData = try decoder.decode([Item].self, from: data)
-//            } catch {
-//                print ("Error Decoding Data")
-//            }
-//        }
-//    }
+    }
     
-//    func loadData() {
-//        let fetchRequest = Item(context: context)
-//        do{
-//            dummyData = try fetchRequest.
-//        } catch {
-//
-//        }
-//
-//    }
+    func loadData(with request : NSFetchRequest<Item> = Item.fetchRequest(),predicate: NSPredicate? = nil) {
+        
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", (selectCategory?.name!)!)
+        
+        if predicate != nil {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate,predicate!])
+        } else {
+            request.predicate = categoryPredicate
+        }
+        
+        
+        do{
+            dummyData = try context.fetch(request)
+        } catch {
+            print ("Error Reading data from context \(error)")
+        }
+        tableView.reloadData()
+    }
     
 }
+//MARK -- SearchBar methods,instead adding to main class use extension
+
+extension ToDoListViewController : UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        let predicate = NSPredicate(format: "item CONTAINS[cd] %@", searchBar.text!)
+        
+        request.sortDescriptors = [NSSortDescriptor(key: "item", ascending: true)]
+        
+        loadData(with: request,predicate: predicate)
+        
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadData()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
+    }
+    
+}
+
+
+
+
+
+
+
+
+
 
 

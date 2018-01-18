@@ -14,6 +14,7 @@
 		289061531FFDD5D400E95BEE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 289061511FFDD5D400E95BEE /* LaunchScreen.storyboard */; };
 		2890616520012BDD00E95BEE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2890616420012BDD00E95BEE /* Default-568h@2x.png */; };
 		2890618920031B3600E95BEE /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2890618720031B3600E95BEE /* DataModel.xcdatamodeld */; };
+		2890618B200BFFA400E95BEE /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2890618A200BFFA400E95BEE /* CategoryViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		289061541FFDD5D400E95BEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2890616420012BDD00E95BEE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		2890618820031B3600E95BEE /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		2890618A200BFFA400E95BEE /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		289061632001295A00E95BEE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				2890618A200BFFA400E95BEE /* CategoryViewController.swift */,
 				2890614A1FFDD5D400E95BEE /* ToDoListViewController.swift */,
 			);
 			path = Controllers;
@@ -175,6 +178,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2890618B200BFFA400E95BEE /* CategoryViewController.swift in Sources */,
 				2890614B1FFDD5D400E95BEE /* ToDoListViewController.swift in Sources */,
 				2890618920031B3600E95BEE /* DataModel.xcdatamodeld in Sources */,
 				289061491FFDD5D400E95BEE /* AppDelegate.swift in Sources */,
@@ -322,7 +326,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.Asif.TableTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -338,7 +342,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.Asif.TableTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
